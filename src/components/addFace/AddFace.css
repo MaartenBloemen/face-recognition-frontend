@@ -1,0 +1,11 @@
+.btn-circle.btn-xl {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+}
+.btn-add {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 3;
+}
