@@ -3,6 +3,7 @@ import {Modal} from "react-bootstrap";
 import Img from 'react-image';
 import placeholder from "../invalid.png";
 import './AddFace.css';
+import axios from 'axios';
 
 class AddFace extends Component {
     constructor(props) {
@@ -13,16 +14,14 @@ class AddFace extends Component {
 
         this.state = {
             show: false,
-            firstName: '',
-            lastName: ''
+            name: ''
         };
     }
 
     handleClose() {
         this.setState({
             show: false,
-            firstName: '',
-            lastName: ''
+            name: '',
         });
     }
 
@@ -31,7 +30,18 @@ class AddFace extends Component {
     }
 
     handleSubmit = () => {
-        //TODO: post data to backend here
+        let data = new FormData();
+        data.append('name', this.state.name);
+
+        axios.post('http://localhost:8080/add_face', data)
+            .then((response) => {
+                this.handleClose();
+            }, (error) => {
+                console.log(error);
+                this.setState({
+                    name: ''
+                });
+            });
     };
 
     handleInputChange = (event) => {
@@ -51,29 +61,17 @@ class AddFace extends Component {
                             <input type="text"
                                    className="form-control"
                                    placeholder="John"
-                                   name="firstName"
-                                   value={this.state.firstName}
+                                   name="name"
+                                   value={this.state.name}
                                    onChange={this.handleInputChange}/>
                             <small className="form-text text-muted text-right">
                                 The first name of the person to add.
                             </small>
                         </div>
                         <div>
-                            <label>Last name</label>
-                            <input type="text"
-                                   className="form-control"
-                                   placeholder="Doe"
-                                   name="lastName"
-                                   value={this.state.lastName}
-                                   onChange={this.handleInputChange}/>
-                            <small className="form-text text-muted text-right">
-                                The last name of the person to add.
-                            </small>
-                        </div>
-                        <div>
                             <label>Face</label>
                             <Img className="img-fluid"
-                                 src={[`url`, placeholder]}
+                                 src={[`http://localhost:8080/stream`, placeholder]}
                             />
                         </div>
                     </Modal.Body>
