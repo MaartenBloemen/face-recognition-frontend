@@ -12,13 +12,18 @@ class FaceRecognition extends Component {
         this.state = {
             name: '',
             accuracy: '',
-            message: ''
+            message: '',
+            remove: ''
         };
     }
 
     componentDidMount() {
         setInterval(() => this.fetchData(), 5000);
     }
+
+    handleInputChange = (event) => {
+        this.setState({[event.target.name]: event.target.value});
+    };
 
     fetchData = () => {
         axios.get('http://localhost:8080/without_blink')
@@ -31,6 +36,19 @@ class FaceRecognition extends Component {
             }, (error) => {
                 console.log(error);
             });
+    };
+
+    deletePerson = () => {
+        axios.get(`http://localhost:8080/remove_face/${this.state.remove}`)
+            .then((response) => {
+                alert(`${this.state.remove} was removed from the database`);
+            }, (error) => {
+                alert(`${this.state.remove} was not found in the database`);
+            });
+
+        this.setState({
+            remove: ''
+        });
     };
 
 
@@ -65,6 +83,23 @@ class FaceRecognition extends Component {
                                     <textarea className="form-control"
                                               value={this.state.message}
                                               rows="5"/>
+                                </div>
+                                <hr/>
+                                <div>
+                                    <div>
+                                        <label>Remove person:</label>
+                                        <input type="text"
+                                               className="form-control"
+                                               value={this.state.remove}
+                                               name='remove'
+                                               onChange={this.handleInputChange}
+                                        />
+                                        <br/>
+                                        <button className='btn btn-danger  btn-block'
+                                                onClick={() => this.deletePerson()}>
+                                            <i className='fa fa-trash'/> Delete person from database
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
